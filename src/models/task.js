@@ -16,10 +16,11 @@ const taskSchema = new mongoose.Schema({
 	},
 	owner:{
 		type: mongoose.Schema.Types.ObjectId,
-		required: true
+		required: true,
+		ref: 'users'
 	}
 })
-
+// before save
 taskSchema.pre('save', async function(next){
 	const task = this
 	next();

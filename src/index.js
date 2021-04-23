@@ -24,23 +24,4 @@ app.get('',(req, res)=>{
 	res.send("<h1>Task Manager Application</h1>")
 })
 
-// const bcrypt = require('bcryptjs')
-// const myFunc = async() =>{
-// 	const password = "password@123"
-// 	const hashedPassword = await bcrypt.hash(password, 8)
-// 	console.log(hashedPassword)
-// 	const status = await bcrypt.compare("password@123", hashedPassword)
-// 	console.log(status)
-// }
-// myFunc()
-
 app.listen(PORT,()=>console.log('server is up on port '+PORT));
-
-// const myFunc =() =>{
-// 	const token = jwt.sign('hello','secretcode')
-// 	console.log(token)
-// 	const verifyy= jwt.verify(token, 'secretcode')
-// 	console.log(verifyy)
-// 	console.log(jwt.decode(token))
-// }
-// myFunc()
