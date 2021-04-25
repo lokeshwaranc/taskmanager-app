@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Task = require('../models/task');
+const { Timestamp } = require('bson');
 userSchema = new mongoose.Schema({
 	name:{
 		type: String,
@@ -38,9 +39,11 @@ userSchema = new mongoose.Schema({
 			required: true
 		}
 	}]
+}, {
+	timestamps: true
 })
 
-userSchema.virtual('tasks', {ref:'task', localField: '_id', foreignField: 'owner'})
+userSchema.virtual('tasks', {ref: 'task', localField: '_id', foreignField: 'owner'})
 
 userSchema.methods.toJSON = function() {
 	const user = this

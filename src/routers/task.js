@@ -20,17 +20,36 @@ taskRouter.post('/tasks', auth, async (req, res)=>{
 
 taskRouter.get('/tasks', auth, async (req, res)=>{
 	try {
+		const match ={}
+		const sort = {}
+		if(req.query.completed){
+			match.completed = req.query.completed === 'true'
+		}
+		if(req.query.sortBy){
+			const sortBy = req.query.sortBy.split(":")
+			sort[sortBy[0]] = sortBy[1] === 'desc' ? -1 : 1
+		}
 		// const tasks = await Task.find({owner:req.user._id})
 		// console.log("tasksss ", tasks)
 		// if(tasks.length === 0){
 		// 	return res.send({error:"no task found"})
 		// }
-		await req.user.populate('tasks').execPopulate()
+		await req.user.populate({
+			path: 'tasks',
+			match,
+			options:{
+				limit: parseInt(req.query.limit),
+				skip: parseInt(req.query.skip),
+				sort
+			}
+		}).execPopulate()
 		if(req.user.tasks.length === 0){
 			return res.send({error:"no task found"})
 		}
+		// console.log(req.user.tasks)
 		res.send(req.user.tasks)
 	} catch (error) {
+		// console.log(error)
 		res.status(400).send(error)
 	}
 })
