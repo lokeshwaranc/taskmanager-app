@@ -1,7 +1,8 @@
 const express = require('express');
+const multer = require('multer');
 
 const User = require('../models/user');
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/auth');
 
 const userRouter = new express.Router()
 
@@ -83,6 +84,48 @@ userRouter.post('/users/login', async (req, res)=>{
 		res.status(400).send(error)
 	}
 })
+
+const avatar = multer({
+	limits: {
+		fileSize: 1000000
+	},
+	fileFilter(req, file, cb){
+		if(!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)){
+			return cb(new Error('Please upload a image'))
+		}
+		cb(undefined, true)
+	}
+}, )
+
+
+userRouter.get('/users/:id/avatar', async(req, res) =>{
+	try {
+		const user= await User.findById(req.params.id)
+		if(!user || !user.avatar){
+			throw new Error('no data found')
+		}
+		res.set('Content-Type', 'image/jpeg')
+		res.send(user.avatar);
+		
+	} catch (error) {
+		res.status(400).send('error in fetching avatar')
+	}
+})
+
+userRouter.post('/users/me/avatar', auth, avatar.single('avatar'), async (req, res)=>{
+	req.user.avatar = req.file.buffer
+	await req.user.save()
+	res.send();
+},
+(error, req, res, next)=>{
+	res.status(400).send({error: error.message})
+})
+
+userRouter.delete('/users/me/avatar', auth, async(req, res)=>{
+	req.user.avatar = undefined
+	await req.user.save()
+	res.send();
+} )
 
 userRouter.post('/users/logout', auth, async(req, res)=>{
 	try {
