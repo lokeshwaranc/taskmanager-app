@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 
 
-const uri = "mongodb+srv://root:Qwerty`123@cluster0.c23ur.mongodb.net/todo?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URL;
 
 mongoose.connect(uri,{useNewUrlParser: true,  useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: true})
 .then(result=> console.log("Mongo Atlas connected"))
